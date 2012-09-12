@@ -1,0 +1,14 @@
+c8dd26c9addbc1ae2d78b5180c6911b1 *DESCRIPTION
+999623642c9056d8417e57228f36189d *NAMESPACE
+9cf97411fe0c2aba59b771b1984ef951 *NEWS
+ba6500a5ae4f3ab63093c6fa6027c608 *R/metrics.R
+e115ae0ff9bdcb02e19591feb2c3dc82 *R/metrics_methods.R
+9494d2f9eef3dab96bc7d04f9f8b655c *README.md
+908ca415d07f9da8b1298b8f8e7b5613 *acuna.png
+0954727c775370d34ebb968f3f43c176 *altmetric_logo_title.png
+7cd9cc52c90da013bb05c5f8a647ed02 *inst/doc/README.pdf
+6f29345a88fd7a3c38ae1f78de8c5bbe *man/altmetric_data.Rd
+ca001df96d1031fc6c640a598f9b2b94 *man/altmetrics.Rd
+60d85c8e63c266c64ceae6ac07846808 *man/plot.altmetric.Rd
+d4c3e24a7c124624f41aa7275d18201e *man/print.altmetric.Rd
+c46e128d1e7edb4d02d693c2985a7058 *man/return_provider.Rd
