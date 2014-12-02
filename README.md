@@ -1,11 +1,25 @@
-![altmetric.com](https://raw.github.com/ropensci/rAltmetric/master/altmetric_logo_title.png) 
+
+Linux build: [![Build Status](https://travis-ci.org/ropensci/rAltmetric.svg?branch=master)](https://travis-ci.org/ropensci/rAltmetric)  
+Windows build: [![Build status](https://ci.appveyor.com/api/projects/status/x6x8d21rmcsv2ybt)](https://ci.appveyor.com/project/karthik/raltmetric)  
+
+
+[altmetric.com](https://raw.github.com/ropensci/rAltmetric/master/altmetric_logo_title.png)
 # rAltmetric
 
 This package provides a way to programmatically retrieve altmetric data from [altmetric.com](http://altmetric.com) for any publication with the appropriate identifer. The package is really simple to use and only has two major functions: One (`altmetrics()`) to download metrics and another (`altmetric_data()`) to extract the data into a `data.frame`. It also includes generic S3 methods to plot/print metrics for any altmetric object.
 
+Questions, features requests and issues should go [here](https://github.com/ropensci/rAltmetric/issues/). General comments to [karthik.ram@gmail.com](mailto:karthik.ram@gmail.com).
+
 # Installing the package
 
-```r
+A stable version is available from CRAN. To install
+
+```coffee
+install.packages('rAltmetric')
+```
+
+## Development version
+```coffee
 # If you don't already have the devtools library, first run
 install.packages('devtools')
 
@@ -19,7 +33,7 @@ install_github('rAltmetric', 'ropensci')
 ## Obtaining metrics
 There was a recent paper by [Acuna et al](http://www.nature.com/news/2010/100616/full/465860a.html) that received a lot of attention on Twitter. What was the impact of that paper?
 
-```r
+```coffee
 library(rAltmetric)
 acuna <- altmetrics('10.1038/489201a')
 > acuna
@@ -37,7 +51,7 @@ Altmetrics on: "Future impact: Predicting scientific success" with doi 10.1038/4
 ## Data
 To obtain the metrics in tabular form for further processing, run any object of class `altmetric` through `altmetric_data()` to get data that can easily be written to disk as a spreadsheet.
 
-```r
+```coffee
 > altmetric_data(acuna)
                                          title
 1 Future impact: Predicting scientific success
@@ -77,7 +91,7 @@ To obtain the metrics in tabular form for further processing, run any object of 
 
 You can save these data into a clean spreadsheet format:
 
-```r
+```coffee
 acuna_data <- altmetric_data(acuna)
 write.csv(acuna_data, file = 'acuna_altmetrics.csv')
 ```
@@ -85,7 +99,7 @@ write.csv(acuna_data, file = 'acuna_altmetrics.csv')
 ## Visualization
 For any altmetric object you can quickly plot the stats with a generic `plot` function. The plot overlays the [altmetric badge and the score](http://api.altmetric.com/embeds.html) on the top right corner. If you prefer a customized plot, create your own with the raw data generated from `almetric_data()`
 
-```r
+```coffee
 > plot(acuna)
 ```
 
@@ -94,7 +108,7 @@ For any altmetric object you can quickly plot the stats with a generic `plot` fu
 # Gathering metrics for many DOIs
 For a real world use-case, one might want to get metrics on multiple publications. If so, just read them from a spreadsheet and `llply` through them like the example below.
 
-```r
+```coffee
 # Be sure to update the path if the example csv is not in your working dir
 doi_data <- read.csv('dois.csv', header = TRUE)
 
@@ -108,17 +122,37 @@ doi_data <- read.csv('dois.csv', header = TRUE)
 
 library(plyr)
 # First, let's retrieve the metrics.
-raw_metrics <- llply(doi_data$doi, altmetrics, .progress = 'text')
+raw_metrics <- llply(doi_data$doi, function(x) altmetrics(doi = x), .progress = 'text')
 # Now let's pull the data together.
 metric_data <- ldply(raw_metrics, altmetric_data)
 # Finally we save this to a spreadsheet for further analysis/vizualization.
 write.csv(metric_data, file = "metric_data.csv")
 ```
 
-
-
-Questions, features requests and issues should go [here](https://github.com/ropensci/rAltmetric/issues/). General comments to [karthik.ram@gmail.com](mailto:karthik.ram@gmail.com). The package is early in development so bug reports are most welcome.
-
 ## Further reading
 * [Metrics: Do metrics matter?](http://www.nature.com/news/2010/100616/full/465860a.html)
-* [The altmetrics manifesto](http://altmetrics.org/manifesto/) 
+* [The altmetrics manifesto](http://altmetrics.org/manifesto/)
+
+
+To cite package ‘rAltmetric’ in publications use:
+
+```coffee
+  Karthik Ram (2012). rAltmetric: Retrieves altmerics data for any
+  published paper from altmetrics.com. R package version 0.3.
+  http://CRAN.R-project.org/package=rAltmetric
+
+A BibTeX entry for LaTeX users is
+
+  @Manual{,
+    title = {rAltmetric: Retrieves altmerics data for any published paper from
+altmetrics.com},
+    author = {Karthik Ram},
+    year = {2012},
+    note = {R package version 0.3},
+    url = {http://CRAN.R-project.org/package=rAltmetric},
+  }
+```
+
+
+
+[![](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)
