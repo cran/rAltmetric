@@ -1,144 +1,161 @@
 
-Linux build: [![Build Status](https://travis-ci.org/ropensci/rAltmetric.svg?branch=master)](https://travis-ci.org/ropensci/rAltmetric)  
-Windows build: [![Build status](https://ci.appveyor.com/api/projects/status/x6x8d21rmcsv2ybt)](https://ci.appveyor.com/project/karthik/raltmetric)  
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+![altmetric.com](https://github.com/ropensci/rAltmetric/raw/master/altmetric_logo_title.png)
 
+rAltmetric
+==========
 
-[altmetric.com](https://raw.github.com/ropensci/rAltmetric/master/altmetric_logo_title.png)
-# rAltmetric
+![](http://cranlogs.r-pkg.org/badges/rAltmetric)
+[![Travis-CI Build Status](https://travis-ci.org/ropensci/rAltmetric.svg?branch=master)](https://travis-ci.org/ropensci/rAltmetric)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ropensci/rAltmetric?branch=master&svg=true)](https://ci.appveyor.com/project/ropensci/rAltmetric)
+[![Coverage Status](https://img.shields.io/codecov/c/github/ropensci/rAltmetric/master.svg)](https://codecov.io/github/ropensci/rAltmetric?branch=master)
 
-This package provides a way to programmatically retrieve altmetric data from [altmetric.com](http://altmetric.com) for any publication with the appropriate identifer. The package is really simple to use and only has two major functions: One (`altmetrics()`) to download metrics and another (`altmetric_data()`) to extract the data into a `data.frame`. It also includes generic S3 methods to plot/print metrics for any altmetric object.
+This package provides a way to programmatically retrieve altmetrics from various publication types (books, newsletters, articles, peer-reviewed papers and more) from [altmetric.com](http://altmetric.com). The package is really simple to use and only has two major functions:
+- `altmetrics` - Pass it a doi, isbn, uri, arxiv id or other to get metrics
+- `altmetric_data` Pass it the results from the previous call to get a tidy `data.frame`
 
-Questions, features requests and issues should go [here](https://github.com/ropensci/rAltmetric/issues/). General comments to [karthik.ram@gmail.com](mailto:karthik.ram@gmail.com).
+Questions, features requests and issues should go [here](https://github.com/ropensci/rAltmetric/issues/).
 
-# Installing the package
+Installing the package 🛠
+========================
 
 A stable version is available from CRAN. To install
 
-```coffee
+``` r
 install.packages('rAltmetric')
+# or the 👷 dev version
+devtools::install_github("ropensci/rAltmetric")
 ```
 
-## Development version
-```coffee
-# If you don't already have the devtools library, first run
-install.packages('devtools')
+Quick Tutorial
+==============
 
-# then install the package
-library(devtools)
-install_github('rAltmetric', 'ropensci')
-```
+Obtaining metrics
+-----------------
 
-# Quick Tutorial
+There was a 2010 paper by [Acuna et al](http://www.nature.com/news/2010/100616/full/465860a.html) that received a lot of attention on Twitter. What was the impact of that paper?
 
-## Obtaining metrics
-There was a recent paper by [Acuna et al](http://www.nature.com/news/2010/100616/full/465860a.html) that received a lot of attention on Twitter. What was the impact of that paper?
-
-```coffee
+``` r
 library(rAltmetric)
-acuna <- altmetrics('10.1038/489201a')
-> acuna
-Altmetrics on: "Future impact: Predicting scientific success" with doi 10.1038/489201a (altmetric_id: 942310) published in Nature.
-  provider count
-1    Feeds     9
-2  Google+     1
-3    Cited   174
-4   Tweets   157
-5 Accounts   167
-
+acuna <- altmetrics(doi = "10.1038/465860a")
+acuna
+#> Altmetrics on: "Metrics: Do metrics matter?" with altmetric_id: 385053 published in Nature.
+#>                         stats
+#> cited_by_fbwalls_count      3
+#> cited_by_feeds_count        3
+#> cited_by_gplus_count        2
+#> cited_by_msm_count          1
+#> cited_by_policies_count     1
+#> cited_by_posts_count       31
+#> cited_by_tweeters_count    20
+#> cited_by_accounts_count    30
 ```
 
+Data
+----
 
-## Data
-To obtain the metrics in tabular form for further processing, run any object of class `altmetric` through `altmetric_data()` to get data that can easily be written to disk as a spreadsheet.
+To obtain the metrics in tabular form for further processing, run any object of class `altmetric` through `altmetric_data()` to get a `data.frame` that can easily be written to disk.
 
-```coffee
-> altmetric_data(acuna)
-                                         title
-1 Future impact: Predicting scientific success
-              doi   nlmid            altmetric_jid     issns
-1 10.1038/489201a 0410462 4f6fa50a3cf058f610003160 0028-0836
-  journal altmetric_id schema is_oa cited_by_feeds_count
-1  Nature       942310  1.5.4 FALSE                  173
-  cited_by_gplus_count cited_by_posts_count
-1                  173                  173
-  cited_by_tweeters_count cited_by_accounts_count   score
-1                     156                     166 184.598
-  mendeley connotea citeulike pub sci com doc
-1        0        0        11  62  84   6   8
-                                                                url
-1 http://www.nature.com/nature/journal/v489/n7415/full/489201a.html
-    added_on published_on subjects scopus_subjects
-1 1347471425   1347404400  science         General
-  last_updated readers_count X1 count_all count_journal
-1   1348828350            11  1    754555         13972
-  count_similar_age_1m count_similar_age_3m
-1                22408                56213
-  count_similar_age_journal_1m count_similar_age_journal_3m
-1                          508                         1035
-  rank_all rank_journal rank_similar_age_1m
-1   754043        13759               22339
-  rank_similar_age_3m rank_similar_age_journal_1m
-1               56074                         459
-  rank_similar_age_journal_3m pct_all pct_journal
-1                         947   99.93       98.48
-  pct_similar_age_1m pct_similar_age_3m
-1              99.69              99.75
-  pct_similar_age_journal_1m pct_similar_age_journal_3m
-1                      90.35                      91.50
-                                              details_url
-1 http://www.altmetric.com/details.php?citation_id=942310
+``` r
+altmetric_data(acuna)
+#>                         title             doi     pmid
+#> 1 Metrics: Do metrics matter? 10.1038/465860a 20559361
+#>                                                                         tq1
+#> 1 Survey of how metrics are used in hiring, promotion and tenure decisions.
+#>                                                                                                   tq2
+#> 1 Should some professions be excluded from performance metrics? #metrics #kpi #performancemeasurement
+#>                                                tq3
+#> 1 “@Nanomedicina: Publications: Do metrics matter?
+#>                                               tq4            altmetric_jid
+#> 1 Do metrics matter? #oaweek13 (in talk @pgroth ) 4f6fa50a3cf058f610003160
+#>      issns1    issns2 journal cohorts.pub cohorts.sci cohorts.com
+#> 1 0028-0836 1476-4687  Nature          13           5           2
+#>   context.all.count context.all.mean context.all.rank context.all.pct
+#> 1           7133716  6.3030007714043           130911              98
+#>   context.all.higher_than context.journal.count context.journal.mean
+#> 1                 7003174                 44393       68.76030910975
+#>   context.journal.rank context.journal.pct context.journal.higher_than
+#> 1                10546                  76                       33847
+#>   context.similar_age_3m.count context.similar_age_3m.mean
+#> 1                        76598              5.330816089403
+#>   context.similar_age_3m.rank context.similar_age_3m.pct
+#> 1                        1082                         98
+#>   context.similar_age_3m.higher_than context.similar_age_journal_3m.count
+#> 1                              75516                                  894
+#>   context.similar_age_journal_3m.mean context.similar_age_journal_3m.rank
+#> 1                     54.580732362822                                 262
+#>   context.similar_age_journal_3m.pct
+#> 1                                 70
+#>   context.similar_age_journal_3m.higher_than type altmetric_id schema
+#> 1                                        632 news       385053  1.5.4
+#>   is_oa cited_by_fbwalls_count cited_by_feeds_count cited_by_gplus_count
+#> 1 FALSE                      3                    3                    2
+#>   cited_by_msm_count cited_by_policies_count cited_by_posts_count
+#> 1                  1                       1                   31
+#>   cited_by_tweeters_count cited_by_accounts_count last_updated  score
+#> 1                      20                      30   1454625692 53.388
+#>   history.1y history.6m history.3m history.1m history.1w history.6d
+#> 1          0          0          0          0          0          0
+#>   history.5d history.4d history.3d history.2d history.1d history.at
+#> 1          0          0          0          0          0     53.388
+#>                                 url   added_on published_on subjects
+#> 1 http://dx.doi.org/10.1038/465860a 1317207766   1276646400  science
+#>   scopus_subjects readers.citeulike readers.mendeley readers.connotea
+#> 1         General                 3              303                2
+#>   readers_count
+#> 1           308
+#>                                                                 images.small
+#> 1 https://altmetric-badges.a.ssl.fastly.net/?size=64&score=54&types=mbtttfdg
+#>                                                                 images.medium
+#> 1 https://altmetric-badges.a.ssl.fastly.net/?size=100&score=54&types=mbtttfdg
+#>                                                                  images.large
+#> 1 https://altmetric-badges.a.ssl.fastly.net/?size=180&score=54&types=mbtttfdg
+#>                                               details_url
+#> 1 http://www.altmetric.com/details.php?citation_id=385053
 ```
 
 You can save these data into a clean spreadsheet format:
 
-```coffee
+``` r
 acuna_data <- altmetric_data(acuna)
-write.csv(acuna_data, file = 'acuna_altmetrics.csv')
+readr::write_csv(acuna_data, path = 'acuna_altmetrics.csv')
 ```
 
-## Visualization
-For any altmetric object you can quickly plot the stats with a generic `plot` function. The plot overlays the [altmetric badge and the score](http://api.altmetric.com/embeds.html) on the top right corner. If you prefer a customized plot, create your own with the raw data generated from `almetric_data()`
+Gathering metrics for many DOIs
+===============================
 
-```coffee
-> plot(acuna)
-```
-
-![stats for Acuna's paper](https://raw.github.com/ropensci/rAltmetric/master/acuna.png)
-
-# Gathering metrics for many DOIs
 For a real world use-case, one might want to get metrics on multiple publications. If so, just read them from a spreadsheet and `llply` through them like the example below.
 
-```coffee
-# Be sure to update the path if the example csv is not in your working dir
-doi_data <- read.csv('dois.csv', header = TRUE)
-
-> doi_data
-                         doi
-1        10.1038/nature09210
-2    10.1126/science.1187820
-3 10.1016/j.tree.2011.01.009
-4             10.1086/664183
+``` r
+library(rAltmetric)
+library(magrittr)
+library(purrr)
 
 
-library(plyr)
-# First, let's retrieve the metrics.
-raw_metrics <- llply(doi_data$doi, function(x) altmetrics(doi = x), .progress = 'text')
-# Now let's pull the data together.
-metric_data <- ldply(raw_metrics, altmetric_data)
-# Finally we save this to a spreadsheet for further analysis/vizualization.
-write.csv(metric_data, file = "metric_data.csv")
+ids <- list(c(
+  "10.1038/nature09210",
+  "10.1126/science.1187820",
+  "10.1016/j.tree.2011.01.009",
+  "10.1086/664183"
+))
+
+alm <- function(x)  altmetrics(doi = x) %>% altmetric_data()
+
+results <- pmap_df(ids, alm)
+# This results in a data.frame with one row per identifier.
 ```
 
-## Further reading
-* [Metrics: Do metrics matter?](http://www.nature.com/news/2010/100616/full/465860a.html)
-* [The altmetrics manifesto](http://altmetrics.org/manifesto/)
+Further reading
+---------------
 
+-   [Metrics: Do metrics matter?](http://www.nature.com/news/2010/100616/full/465860a.html)
+-   [The altmetrics manifesto](http://altmetrics.org/manifesto/)
 
-To cite package ‘rAltmetric’ in publications use:
+📚 To cite package `rAltmetric` in publications use:
 
-```coffee
-  Karthik Ram (2012). rAltmetric: Retrieves altmerics data for any
-  published paper from altmetrics.com. R package version 0.3.
+``` r
+  Karthik Ram (2017). rAltmetric: Retrieves altmerics data for any
+  published paper from altmetrics.com. R package version 0.7.
   http://CRAN.R-project.org/package=rAltmetric
 
 A BibTeX entry for LaTeX users is
@@ -147,12 +164,10 @@ A BibTeX entry for LaTeX users is
     title = {rAltmetric: Retrieves altmerics data for any published paper from
 altmetrics.com},
     author = {Karthik Ram},
-    year = {2012},
-    note = {R package version 0.3},
+    year = {2017},
+    note = {R package version 0.7},
     url = {http://CRAN.R-project.org/package=rAltmetric},
   }
 ```
-
-
 
 [![](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org)

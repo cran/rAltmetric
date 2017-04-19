@@ -1,0 +1,48 @@
+---
+title: "Introduction to Altmetric"
+author: "Karthik Ram"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to Altmetric}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This is a short vignette explaning how to use `rAltmetric`. Altmetric is a private company that collects metrics that go far beyond traditional citations. It collects mentions on various social media to provide a more complete picture of the impact of a scholarly publication. 
+
+The core functionality of the package is captured in two functions:
+
+`altmetrics` - Returns data for a valid identifier such as an altmetric object id, a pubmed ID, an arxiv identifier, a doi, ISBN and so on.  
+`altmetric_data` - takes the output of the previous function and returns a tidy data.frame
+
+The package can be used to parse a whole batch of identifiers at once.
+
+e.g.
+
+```{r}
+library(rAltmetric)
+library(magrittr)
+library(purrr)
+
+
+ids <- list(c(
+  "10.1038/nature09210",
+  "10.1126/science.1187820",
+  "10.1016/j.tree.2011.01.009",
+  "10.1086/664183"
+))
+
+alm <- function(x)  altmetrics(doi = x) %>% altmetric_data()
+
+results <- pmap_df(ids, alm)
+# This results in a data.frame with one row per identifier.
+```
+
+You can now see some citation data for these papers.
+
+```{r}
+library(dplyr)
+knitr::kable(results %>% select(title, doi,  starts_with("cited")))
+```
+
